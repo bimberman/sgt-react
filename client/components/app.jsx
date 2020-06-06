@@ -9,6 +9,7 @@ class App extends React.Component {
     this.state = {
       grades: []
     };
+    this.avg = 0;
   }
 
   componentDidMount() {
@@ -18,11 +19,21 @@ class App extends React.Component {
       .catch(error => console.error(error));
   }
 
+  getAverageGrade() {
+    const { grades } = this.state;
+    this.avg = grades.reduce((accumulator, grade) => {
+      return accumulator + grade.grade;
+    }, 0);
+
+    this.avg = grades.length ? Math.ceil(this.avg / grades.length) : 0;
+  }
+
   render() {
+    this.getAverageGrade();
     return (
       <div className="container">
         <div className="row">
-          <Header/>
+          <Header average={this.avg}/>
         </div>
         <div className="row">
           <div className="col-lg-8 col-md-12">
