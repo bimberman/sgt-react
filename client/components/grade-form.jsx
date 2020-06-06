@@ -6,7 +6,7 @@ export default class GradeForm extends React.Component {
     this.state = {
       name: '',
       course: '',
-      grade: ''
+      grade: 0
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -24,7 +24,7 @@ export default class GradeForm extends React.Component {
     this.props.onSubmit({
       name: this.state.name,
       course: this.state.course,
-      grade: this.state.grade
+      grade: Number.parseInt(this.state.grade)
     });
     this.resetForm();
   }
@@ -63,7 +63,7 @@ export default class GradeForm extends React.Component {
             <div className="input-group-prepend">
               <i className="input-group-text fas fa-graduation-cap" aria-hidden="true"></i>
             </div>
-            <input value={gradeValue} onChange={this.handleChange} type="text" className="form-control" required placeholder="Grade" name="grade"/>
+            <input value={gradeValue} onChange={this.handleChange} type="number" className="form-control" required placeholder="Grade" name="grade"/>
           </div>
           <div className="input-group mb-3 justify-content-start">
             <button onClick={this.handleSubmit} type="submit" className="btn btn-outline-success mr-4 col-3">Add</button>
