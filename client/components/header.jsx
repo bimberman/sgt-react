@@ -4,8 +4,8 @@ export default class Header extends React.Component {
 
   render() {
     return (
-      <header className="container-fluid w-75 mt-5 mb-4" id="header">
-        <div className="row d-flex justify-content-around">
+      <header className="container-fluid w-100 mt-5 mb-4" id="header">
+        <div className="row d-flex justify-content-between">
           <h1>
             Student Grade Table
           </h1>
