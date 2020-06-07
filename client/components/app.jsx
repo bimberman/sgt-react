@@ -8,16 +8,19 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      grades: []
+      grades: [],
+      gradeToEditId: null
     };
     this.addGrade = this.addGrade.bind(this);
     this.deleteGrade = this.deleteGrade.bind(this);
+    this.editGrade = this.editGrade.bind(this);
+    this.gradeToEdit = this.gradeToEdit.bind(this);
   }
 
   componentDidMount() {
     fetch('/api/grades')
       .then(res => res.json())
-      .then(grades => this.setState({ grades: grades }))
+      .then(grades => this.setState({ grades: grades, gradeToEditId: null }))
       .catch(error => console.error(error));
   }
 
@@ -33,7 +36,10 @@ class App extends React.Component {
       }
     )
       .then(res => res.json())
-      .then(grade => this.setState({ grades: this.state.grades.concat(grade) }))
+      .then(grade => this.setState({
+        grades: this.state.grades.concat(grade),
+        gradeToEditId: null
+      }))
       .catch(error => console.error(error));
   }
 
@@ -46,10 +52,42 @@ class App extends React.Component {
     )
       .then(res => {
         this.setState({
-          grades: this.state.grades.filter(grade => grade.id !== gradeId)
+          grades: this.state.grades.filter(grade => grade.id !== gradeId),
+          gradeToEditId: null
         });
       })
       .catch(error => console.error(error));
+  }
+
+  editGrade(editGrade) {
+    fetch(
+      `/api/grades/${editGrade.id}`,
+      {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(editGrade)
+      }
+    )
+      .then(res => res.json())
+      .then(resGrade => this.setState({
+        grades: this.state.grades.map(stateGrade => {
+          return stateGrade.id !== resGrade.id
+            ? stateGrade
+            : resGrade;
+        }),
+        gradeToEditId: null
+      }))
+      .catch(error => console.error(error));
+  }
+
+  gradeToEdit(gradeId) {
+    this.setState({
+      grades: this.state.grades,
+      gradeToEditId: gradeId
+    });
+    return this.state.grades.filter(grade => grade.id === gradeId)[0];
   }
 
   getAverageGrade() {
@@ -69,10 +107,19 @@ class App extends React.Component {
         </div>
         <div className="row">
           <div className="pl-0 col-lg-8 col-md-12">
-            <GradeTable grades={this.state.grades} deleteGrade={this.deleteGrade}/>
+            <GradeTable
+              grades={this.state.grades}
+              deleteGrade={this.deleteGrade}
+              gradeToEdit={this.gradeToEdit}
+            />
           </div>
           <div className="pr-0 col-lg-4 col-md-12">
-            <GradeForm onSubmit={this.addGrade}></GradeForm>
+            <GradeForm
+              onSubmit={this.addGrade}
+              editGrade={this.editGrade}
+              gradeToEdit={this.gradeToEdit}
+              gradeToEditId={this.state.gradeToEditId}
+            />
           </div>
         </div>
       </div>

@@ -8,8 +8,10 @@ export default class GradeForm extends React.Component {
       course: '',
       grade: 0
     };
+    this.isEdit = false;
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleEdit = this.handleEdit.bind(this);
     this.handleReset = this.handleReset.bind(this);
   }
 
@@ -26,7 +28,40 @@ export default class GradeForm extends React.Component {
       course: this.state.course,
       grade: Number.parseInt(this.state.grade)
     });
+    this.isEdit = false;
     this.resetForm();
+  }
+
+  handleEdit(event) {
+    event.preventDefault();
+    this.props.editGrade({
+      id: this.props.id,
+      name: this.state.name,
+      course: this.state.course,
+      grade: Number.parseInt(this.state.grade)
+    });
+    this.isEdit = false;
+    this.setState(state => ({
+      name: '',
+      course: '',
+      grade: 0
+    }));
+    this.resetForm();
+  }
+
+  componentDidUpdate() {
+    if (this.props.gradeToEditId !== null && !this.isEdit) {
+      this.editGrade(this.props.gradeToEdit(this.props.gradeToEditId));
+      this.isEdit = true;
+    }
+  }
+
+  editGrade(grade) {
+    this.setState({
+      name: grade.name,
+      course: grade.course,
+      grade: grade.grade
+    });
   }
 
   handleReset() {
@@ -43,7 +78,12 @@ export default class GradeForm extends React.Component {
   }
 
   render() {
+    let submitButton = <button onClick={this.handleSubmit} type="submit" className="btn btn-outline-success mr-4 col-3">Add</button>;
+    if (this.props.gradeToEditId !== null) {
+      submitButton = <button onClick={this.handleEdit} type="submit" className="btn btn-outline-info mr-4 col-3">Edit</button>;
+    }
     const { name: nameValue, course: courseValue, grade: gradeValue } = this.state;
+
     return (
       <form>
         <div className="form-group">
@@ -66,7 +106,7 @@ export default class GradeForm extends React.Component {
             <input value={gradeValue} onChange={this.handleChange} type="number" className="form-control" required placeholder="Grade" name="grade"/>
           </div>
           <div className="input-group mb-3 justify-content-start">
-            <button onClick={this.handleSubmit} type="submit" className="btn btn-outline-success mr-4 col-3">Add</button>
+            {submitButton}
             <button onClick={this.handleReset} type="reset" className="btn btn-outline-dark col-3">Cancel</button>
           </div>
         </div>
