@@ -8,7 +8,6 @@ export default class GradeForm extends React.Component {
       course: '',
       grade: 0
     };
-    this.isEdit = false;
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleEdit = this.handleEdit.bind(this);
@@ -28,19 +27,16 @@ export default class GradeForm extends React.Component {
       course: this.state.course,
       grade: Number.parseInt(this.state.grade)
     });
-    this.isEdit = false;
     this.resetForm();
   }
 
   handleEdit(event) {
     event.preventDefault();
     this.props.editGrade({
-      id: this.props.gradeToEditId,
       name: this.state.name,
       course: this.state.course,
       grade: Number.parseInt(this.state.grade)
     });
-    this.isEdit = false;
     this.setState(state => ({
       name: '',
       course: '',
@@ -50,9 +46,9 @@ export default class GradeForm extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.gradeToEditId !== null && prevProps.gradeToEditId !== this.props.gradeToEditId && !this.isEdit) {
-      this.editGrade(this.props.gradeToEdit(this.props.gradeToEditId));
-      this.isEdit = true;
+    if (this.props.gradeToEditId !== null &&
+        this.props.gradeToEditId !== prevProps.gradeToEditId) {
+      this.editGrade(this.props.getGradeToEdit());
     }
   }
 
@@ -66,7 +62,7 @@ export default class GradeForm extends React.Component {
 
   handleReset() {
     event.preventDefault();
-    this.isEdit = false;
+    this.props.setGradeToEdit(null);
     this.resetForm();
   }
 
@@ -80,7 +76,7 @@ export default class GradeForm extends React.Component {
 
   render() {
     let submitButton = <button onClick={this.handleSubmit} type="submit" className="btn btn-outline-success mr-4 col-3">Add</button>;
-    if (this.props.gradeToEditId !== null && this.isEdit) {
+    if (this.props.gradeToEditId !== null) {
       submitButton = <button onClick={this.handleEdit} type="submit" className="btn btn-outline-info mr-4 col-3">Edit</button>;
     }
     const { name: nameValue, course: courseValue, grade: gradeValue } = this.state;
