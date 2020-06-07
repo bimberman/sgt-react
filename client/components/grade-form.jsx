@@ -35,7 +35,7 @@ export default class GradeForm extends React.Component {
   handleEdit(event) {
     event.preventDefault();
     this.props.editGrade({
-      id: this.props.id,
+      id: this.props.gradeToEditId,
       name: this.state.name,
       course: this.state.course,
       grade: Number.parseInt(this.state.grade)
@@ -49,8 +49,8 @@ export default class GradeForm extends React.Component {
     this.resetForm();
   }
 
-  componentDidUpdate() {
-    if (this.props.gradeToEditId !== null && !this.isEdit) {
+  componentDidUpdate(prevProps) {
+    if (this.props.gradeToEditId !== null && prevProps.gradeToEditId !== this.props.gradeToEditId && !this.isEdit) {
       this.editGrade(this.props.gradeToEdit(this.props.gradeToEditId));
       this.isEdit = true;
     }
@@ -66,6 +66,7 @@ export default class GradeForm extends React.Component {
 
   handleReset() {
     event.preventDefault();
+    this.isEdit = false;
     this.resetForm();
   }
 
@@ -79,7 +80,7 @@ export default class GradeForm extends React.Component {
 
   render() {
     let submitButton = <button onClick={this.handleSubmit} type="submit" className="btn btn-outline-success mr-4 col-3">Add</button>;
-    if (this.props.gradeToEditId !== null) {
+    if (this.props.gradeToEditId !== null && this.isEdit) {
       submitButton = <button onClick={this.handleEdit} type="submit" className="btn btn-outline-info mr-4 col-3">Edit</button>;
     }
     const { name: nameValue, course: courseValue, grade: gradeValue } = this.state;
