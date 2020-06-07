@@ -14,7 +14,7 @@ export default class GradeTable extends React.Component {
           course={grade.course}
           grade={grade.grade}
           deleteGrade={this.props.deleteGrade}
-          gradeToEdit={this.props.gradeToEdit}
+          setGradeToEdit={this.props.setGradeToEdit}
         >
         </Grade>;
       });
@@ -50,7 +50,7 @@ class Grade extends React.Component {
   }
 
   handleEdit(event) {
-    this.props.gradeToEdit(this.props.id);
+    this.props.setGradeToEdit(this.props.id);
   }
 
   render() {

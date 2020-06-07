@@ -14,7 +14,8 @@ class App extends React.Component {
     this.addGrade = this.addGrade.bind(this);
     this.deleteGrade = this.deleteGrade.bind(this);
     this.editGrade = this.editGrade.bind(this);
-    this.gradeToEdit = this.gradeToEdit.bind(this);
+    this.setGradeToEdit = this.setGradeToEdit.bind(this);
+    this.getGradeToEdit = this.getGradeToEdit.bind(this);
   }
 
   componentDidMount() {
@@ -61,7 +62,7 @@ class App extends React.Component {
 
   editGrade(editGrade) {
     fetch(
-      `/api/grades/${editGrade.id}`,
+      `/api/grades/${this.state.gradeToEditId}`,
       {
         method: 'PATCH',
         headers: {
@@ -82,12 +83,15 @@ class App extends React.Component {
       .catch(error => console.error(error));
   }
 
-  gradeToEdit(gradeId) {
+  setGradeToEdit(gradeId) {
     this.setState({
       grades: this.state.grades,
       gradeToEditId: gradeId
     });
-    return this.state.grades.filter(grade => grade.id === gradeId)[0];
+  }
+
+  getGradeToEdit() {
+    return this.state.grades.find(grade => grade.id === this.state.gradeToEditId) || null;
   }
 
   getAverageGrade() {
@@ -110,14 +114,15 @@ class App extends React.Component {
             <GradeTable
               grades={this.state.grades}
               deleteGrade={this.deleteGrade}
-              gradeToEdit={this.gradeToEdit}
+              setGradeToEdit={this.setGradeToEdit}
             />
           </div>
           <div className="pr-0 col-lg-4 col-md-12">
             <GradeForm
               onSubmit={this.addGrade}
               editGrade={this.editGrade}
-              gradeToEdit={this.gradeToEdit}
+              getGradeToEdit={this.getGradeToEdit}
+              setGradeToEdit={this.setGradeToEdit}
               gradeToEditId={this.state.gradeToEditId}
             />
           </div>
