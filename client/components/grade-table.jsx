@@ -7,7 +7,16 @@ export default class GradeTable extends React.Component {
     if (this.props.grades.length) {
       gradesElements = [];
       gradesElements = this.props.grades.map(grade => {
-        return <Grade key={grade.id} id={grade.id} name={grade.name} course={grade.course} grade={grade.grade} deleteGrade={this.props.deleteGrade}></Grade>;
+        return <Grade
+          key={grade.id}
+          id={grade.id}
+          name={grade.name}
+          course={grade.course}
+          grade={grade.grade}
+          deleteGrade={this.props.deleteGrade}
+          gradeToEdit={this.props.gradeToEdit}
+        >
+        </Grade>;
       });
     }
     return (
@@ -32,11 +41,16 @@ class Grade extends React.Component {
 
   constructor(props) {
     super(props);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
+    this.handleEdit = this.handleEdit.bind(this);
   }
 
-  handleSubmit(event) {
+  handleDelete(event) {
     this.props.deleteGrade(this.props.id);
+  }
+
+  handleEdit(event) {
+    this.props.gradeToEdit(this.props.id);
   }
 
   render() {
@@ -47,7 +61,8 @@ class Grade extends React.Component {
         <td>{course}</td>
         <td>{grade}</td>
         <td className="table-data d-flex justify-content-center">
-          <button onClick={this.handleSubmit} className="btn btn-outline-danger border border-0 fas fa-trash"></button>
+          <button onClick={this.handleDelete} className="btn btn-outline-danger border border-0 fas fa-trash"></button>
+          <button onClick={this.handleEdit} className="btn btn-outline-info border border-0 fas fa-edit"></button>
         </td>
       </tr>
     );
